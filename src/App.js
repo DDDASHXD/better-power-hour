@@ -1,7 +1,16 @@
+import './style/main.scss';
+import Options from './components/options';
+import Players from './components/players';
+import Game from './components/game';
+
 function App() {
   return (
     <div className="App">
-      <h1>Better Power Hour</h1>
+      <div className="wrapper">
+        <Options />
+        <Game />
+        <Players />
+      </div>
     </div>
   );
 }
