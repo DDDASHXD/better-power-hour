@@ -12,13 +12,16 @@
 .blobs {
     position: relative;
     width: 100%;
-    height: 100%;
+    height: 26rem;
+    top: 50%;
+    transform: translateY(-50%);
     // background: red;
 
     .tk-blob {
         position: absolute;
         width: 100%;
         height: 100%;
+        z-index: -1;
     }
 }
 
@@ -31,4 +34,14 @@
     width: 15rem;
     height: 15rem;
     border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+    &-seconds {
+        font-size: 5rem;
+        font-weight: 900;
+
+    }
 }
