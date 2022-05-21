@@ -76,7 +76,7 @@ const Game = (props) => {
         }
       } else if (randomNumber > 0.9) {
         if (props.downDrinks) {
-          setCurrentTask("Everybody downs their drinks!");
+          setCurrentTask("Wildcard: Everybody downs their drinks!");
         } else {
           setCurrentTask("Everybody drinks!");
         }

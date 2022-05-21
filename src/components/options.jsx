@@ -63,13 +63,13 @@ const Options = (props) => {
       </div>
       <div className="panel-header">
         <Title order={2} className="options-title">
-          Wildcards
+          Tasks
         </Title>
       </div>
       <div className="wildcards">
         <div className="input-wrapper">
           <TextInput
-            placeholder="Enter new wildcard..."
+            placeholder="Enter new task..."
             onChange={(event) => setNewWildcard(event.target.value)}
             value={newWildcard}
             onKeyUp={(event) => {
@@ -100,7 +100,7 @@ const Options = (props) => {
           <Table>
             <thead>
               <tr>
-                <th>Wildcard</th>
+                <th>Task</th>
                 <th>Actions</th>
               </tr>
             </thead>
