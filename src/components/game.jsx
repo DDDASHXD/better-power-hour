@@ -6,7 +6,7 @@ import "../style/game.scss";
 import sound from "../sounds/finish.mp3";
 const finishSound = new Audio(sound);
 
-const initialTime = 3;
+const initialTime = 60;
 const initialMinuts = 60;
 
 const Game = (props) => {
@@ -17,6 +17,7 @@ const Game = (props) => {
   const [lastPlayer, setLastPlayer] = useState("");
   const [lastWildcard, setLastWildcard] = useState("");
   const [gamePaused, setGamePaused] = useState(false);
+  const [currentPlayer, setCurrentPlayer] = useState("");
 
   useEffect(() => {
     const generatePlayer = () => {
@@ -47,6 +48,20 @@ const Game = (props) => {
         }
       }
 
+      // Check if the wildcard string contains (player) and replace it with a random player from the list
+      if (newWildcard && newWildcard.includes("(player)")) {
+        if (props.players.length < 1) {
+          newWildcard = newWildcard.replace("(player)", "someone");
+        } else {
+          let newPlayer = generatePlayer();
+          while (newPlayer === currentPlayer) {
+            newPlayer = generatePlayer();
+            console.log("duplicate name");
+          }
+          newWildcard = newWildcard.replace("(player)", generatePlayer());
+        }
+      }
+
       setLastWildcard(newWildcard);
       return newWildcard;
     };
@@ -59,6 +74,7 @@ const Game = (props) => {
         props.preDetermined[
           Math.floor(Math.random() * props.preDetermined.length)
         ];
+      setCurrentPlayer(randomPlayer);
       const randomNumber = Math.random();
       // const randomNumber = 9;
       finishSound.play();
@@ -76,7 +92,7 @@ const Game = (props) => {
         }
       } else if (randomNumber > 0.9) {
         if (props.downDrinks) {
-          setCurrentTask("Wildcard: Everybody downs their drinks!");
+          setCurrentTask("Everybody downs their drinks!");
         } else {
           setCurrentTask("Everybody drinks!");
         }
@@ -171,6 +187,22 @@ const Game = (props) => {
           <div
             className="tk-blob aa"
             style={{ "--fill": "#7E6AFCbb", "--amount": 5, "--time": "30s" }}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 274 303.2">
+              <path d="M260.2 41.4c20 29.2 14.6 74.5 7.2 124.4-7.3 49.9-16.6 104.5-49.2 126-32.5 21.6-88.4 10.2-132-15.2s-75-64.7-83.6-107.8C-6.1 125.7 8 79 36.3 47.8 64.5 16.7 107 1.3 150.9.1c43.9-1.1 89.3 12 109.3 41.3z"></path>
+            </svg>
+          </div>
+          <div
+            className="tk-blob aa"
+            style={{ "--fill": "#7E6AFCbb", "--amount": 3, "--time": "10s" }}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 274 303.2">
+              <path d="M260.2 41.4c20 29.2 14.6 74.5 7.2 124.4-7.3 49.9-16.6 104.5-49.2 126-32.5 21.6-88.4 10.2-132-15.2s-75-64.7-83.6-107.8C-6.1 125.7 8 79 36.3 47.8 64.5 16.7 107 1.3 150.9.1c43.9-1.1 89.3 12 109.3 41.3z"></path>
+            </svg>
+          </div>
+          <div
+            className="tk-blob aa"
+            style={{ "--fill": "#7E6AFCbb", "--amount": 7, "--time": "20s" }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 274 303.2">
               <path d="M260.2 41.4c20 29.2 14.6 74.5 7.2 124.4-7.3 49.9-16.6 104.5-49.2 126-32.5 21.6-88.4 10.2-132-15.2s-75-64.7-83.6-107.8C-6.1 125.7 8 79 36.3 47.8 64.5 16.7 107 1.3 150.9.1c43.9-1.1 89.3 12 109.3 41.3z"></path>

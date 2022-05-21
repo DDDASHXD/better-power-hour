@@ -7,7 +7,7 @@ import Game from './components/game';
 
 function App() {
   const [gameRunning, setGameRunning] = useState(false);
-  const [wildcards, setWildcards] = useState(["Drink double", "Drink x4", "Do a handstand", "Hug the player to your right", "Take off a peice of clothing"]);
+  const [wildcards, setWildcards] = useState(["Drink double", "Drink x4", "Down your drink", "Give out a drink", "Slap (player)'s ass", "Take a shot with (player)"]);
   const [players, setPlayers] = useState(["Benny", "Børge"]);
   const [preDetermined, setPredetermined] = useState(["Everybody drinks!", "Everybody downs their drinks!"])
   const [unlimitedMode, setUnlimitedMode] = useState(false);
