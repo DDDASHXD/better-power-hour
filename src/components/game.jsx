@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { Title, Button } from "@mantine/core";
+import { PlayerPlay, PlayerStop, PlayerPause } from "tabler-icons-react";
 import "../style/blobz.min.css";
 import "../style/game.scss";
 
-const initialTime = 3;
+const initialTime = 60;
 const initialMinuts = 60;
 
 const Game = (props) => {
   const [timeLeft, setTimeLeft] = useState(initialTime);
   const [minutesLeft, setMinutesLeft] = useState(initialMinuts);
-  const [gameRunning, setGameRunning] = useState(false);
   const [currentTask, setCurrentTask] = useState("BETTER POWER HOUR");
   const [unlimitedMode, setUnlimitedMode] = useState(initialMinuts);
   const [lastPlayer, setLastPlayer] = useState("");
   const [lastWildcard, setLastWildcard] = useState("");
+  const [gamePaused, setGamePaused] = useState(false);
 
   useEffect(() => {
     const generatePlayer = () => {
@@ -92,46 +93,53 @@ const Game = (props) => {
     };
 
     // Game loop
-    if (gameRunning) {
-      setTimeout(() => {
-        if (timeLeft > 0) {
-          setTimeLeft(timeLeft - 1);
-        } else {
-          showTask();
-          if (minutesLeft > 0) {
-            setMinutesLeft(minutesLeft - 1);
-            setTimeLeft(initialTime);
+    if (!gamePaused) {
+      if (props.gameRunning) {
+        setTimeout(() => {
+          if (timeLeft > 0) {
+            setTimeLeft(timeLeft - 1);
           } else {
-            setGameRunning(false);
-            setTimeLeft(initialTime);
-            setCurrentTask("Game over!");
-            if (props.unlimitedMode) {
-              setMinutesLeft(999999);
+            showTask();
+            if (minutesLeft > 0) {
+              setMinutesLeft(minutesLeft - 1);
+              setTimeLeft(initialTime);
             } else {
-              setMinutesLeft(initialMinuts);
+              props.setGameRunning(false);
+              setTimeLeft(initialTime);
+              setCurrentTask("Game over!");
+              if (props.unlimitedMode) {
+                setMinutesLeft(999999);
+              } else {
+                setMinutesLeft(initialMinuts);
+              }
             }
           }
-        }
-      }, 1000);
-    } else {
-      if (props.unlimitedMode) {
-        setUnlimitedMode("∞");
-        setMinutesLeft(999999);
+        }, 1000);
       } else {
-        setUnlimitedMode(initialMinuts);
-        setMinutesLeft(initialMinuts);
+        if (props.unlimitedMode) {
+          setUnlimitedMode("∞");
+          setMinutesLeft(999999);
+        } else {
+          setUnlimitedMode(initialMinuts);
+          setMinutesLeft(initialMinuts);
+        }
       }
     }
-  }, [timeLeft, gameRunning, props.unlimitedMode]);
+  }, [timeLeft, props.gameRunning, props.unlimitedMode, gamePaused]);
 
   const startGame = () => {
-    setGameRunning(true);
+    props.setGameRunning(true);
   };
 
   const stopGame = () => {
-    setGameRunning(false);
+    props.setGameRunning(false);
+    setGamePaused(false);
     setTimeLeft(initialTime);
     setMinutesLeft(initialMinuts);
+  };
+
+  const pauseGame = () => {
+    setGamePaused(!gamePaused);
   };
 
   return (
@@ -175,12 +183,32 @@ const Game = (props) => {
           </p>
         </div>
       </div>
-      <Button
-        style={{ height: "3rem", width: "50%", margin: "auto" }}
-        onClick={gameRunning ? () => stopGame() : () => startGame()}
-      >
-        {gameRunning ? "Stop Game" : "Start Game"}
-      </Button>
+      <div className="buttons">
+        <Button
+          style={{
+            height: "3rem",
+            width: "3rem",
+            margin: "auto",
+            padding: "0.5rem",
+          }}
+          onClick={props.gameRunning ? () => stopGame() : () => startGame()}
+        >
+          {props.gameRunning ? <PlayerStop /> : <PlayerPlay />}
+        </Button>
+        {props.gameRunning && (
+          <Button
+            style={{
+              height: "3rem",
+              width: "3rem",
+              margin: "auto",
+              padding: "0.5rem",
+            }}
+            onClick={() => pauseGame()}
+          >
+            {gamePaused ? <PlayerPlay /> : <PlayerPause />}
+          </Button>
+        )}
+      </div>
     </div>
   );
 };

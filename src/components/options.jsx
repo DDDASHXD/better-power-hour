@@ -13,6 +13,7 @@ import "../style/options.scss";
 const Options = (props) => {
   const [newWildcard, setNewWildcard] = useState("");
   const [fullscreen, setFullscreen] = useState(false);
+  const [gameRunning, setGameRunning] = useState(true);
 
   useEffect(() => {
     if (fullscreen) {
@@ -20,7 +21,14 @@ const Options = (props) => {
     } else {
       document.exitFullscreen();
     }
-  }, [fullscreen]);
+
+    if (props.gameRunning) {
+      setGameRunning(true);
+    } else {
+      setGameRunning(false);
+    }
+    console.log(props.gameRunning);
+  }, [fullscreen, props.gameRunning]);
 
   return (
     <ScrollArea className="options panel">
@@ -30,13 +38,17 @@ const Options = (props) => {
         </Title>
       </div>
       <div className="options-list">
-        <div className="option">
-          <p>Unlimited mode</p>
-          <Switch
-            checked={props.unlimitedMode}
-            onChange={(event) => props.setUnlimitedMode(event.target.checked)}
-          />
-        </div>
+        {gameRunning ? (
+          <></>
+        ) : (
+          <div className="option">
+            <p>Unlimited mode</p>
+            <Switch
+              checked={props.unlimitedMode}
+              onChange={(event) => props.setUnlimitedMode(event.target.checked)}
+            />
+          </div>
+        )}
         <div className="option">
           <p>Fullscreen</p>
           <Switch onChange={(event) => setFullscreen(event.target.checked)} />
@@ -72,8 +84,13 @@ const Options = (props) => {
             variant="filled"
             color="blue"
             onClick={() => {
-              props.setWildcards([...props.wildcards, newWildcard]);
-              setNewWildcard("");
+              if (
+                newWildcard.length > 0 &&
+                !props.wildcards.includes(newWildcard)
+              ) {
+                props.setWildcards([...props.wildcards, newWildcard]);
+                setNewWildcard("");
+              }
             }}
           >
             <Plus size={33} />

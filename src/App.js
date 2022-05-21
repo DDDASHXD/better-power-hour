@@ -6,6 +6,7 @@ import Players from './components/players';
 import Game from './components/game';
 
 function App() {
+  const [gameRunning, setGameRunning] = useState(false);
   const [wildcards, setWildcards] = useState(["Drink double", "Drink x4", "Do a handstand", "Hug the player to your right", "Take off a peice of clothing"]);
   const [players, setPlayers] = useState(["Benny", "Børge"]);
   const [preDetermined, setPredetermined] = useState(["Everybody drinks!", "Everybody downs their drinks!"])
@@ -14,9 +15,9 @@ function App() {
   return (
     <div className="App">
       <div className="wrapper">
-        <Options wildcards={wildcards} setWildcards={(wildcard) => setWildcards(wildcard)} unlimitedMode={unlimitedMode} setUnlimitedMode={(bool) => setUnlimitedMode(bool)} downDrinks={downDrinks} setDownDrinks={(bool) => setDownDrinks(bool)}/>
-        <Game players={players} wildcards={wildcards} preDetermined={preDetermined} unlimitedMode={unlimitedMode} downDrinks={downDrinks}/>
-        <Players players={players} setPlayers={(player) => setPlayers(player)}/>
+        <Options wildcards={wildcards} setWildcards={(wildcard) => setWildcards(wildcard)} unlimitedMode={unlimitedMode} setUnlimitedMode={(bool) => setUnlimitedMode(bool)} downDrinks={downDrinks} setDownDrinks={(bool) => setDownDrinks(bool)} gameRunning={gameRunning}/>
+        <Game players={players} wildcards={wildcards} preDetermined={preDetermined} unlimitedMode={unlimitedMode} downDrinks={downDrinks} gameRunning={gameRunning} setGameRunning={(bool) => setGameRunning(bool)} />
+        <Players players={players} setPlayers={(player) => setPlayers(player)} />
       </div>
     </div>
   );

@@ -27,8 +27,10 @@ const Players = (props) => {
           variant="filled"
           color="blue"
           onClick={() => {
-            props.setPlayers([...props.players, newPlayer]);
-            setNewPlayer("");
+            if (newPlayer.length > 0 && !props.players.includes(newPlayer)) {
+              props.setPlayers([...props.players, newPlayer]);
+              setNewPlayer("");
+            }
           }}
         >
           <Plus size={33} />
