@@ -3,8 +3,10 @@ import { Title, Button } from "@mantine/core";
 import { PlayerPlay, PlayerStop, PlayerPause } from "tabler-icons-react";
 import "../style/blobz.min.css";
 import "../style/game.scss";
+import sound from "../sounds/finish.mp3";
+const finishSound = new Audio(sound);
 
-const initialTime = 60;
+const initialTime = 3;
 const initialMinuts = 60;
 
 const Game = (props) => {
@@ -59,6 +61,7 @@ const Game = (props) => {
         ];
       const randomNumber = Math.random();
       // const randomNumber = 9;
+      finishSound.play();
 
       if (
         randomNumber < 0.9 &&
