@@ -12,6 +12,15 @@ import "../style/options.scss";
 
 const Options = (props) => {
   const [newWildcard, setNewWildcard] = useState("");
+  const [fullscreen, setFullscreen] = useState(false);
+
+  useEffect(() => {
+    if (fullscreen) {
+      document.documentElement.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  }, [fullscreen]);
 
   return (
     <ScrollArea className="options panel">
@@ -23,11 +32,21 @@ const Options = (props) => {
       <div className="options-list">
         <div className="option">
           <p>Unlimited mode</p>
-          <Switch />
+          <Switch
+            checked={props.unlimitedMode}
+            onChange={(event) => props.setUnlimitedMode(event.target.checked)}
+          />
         </div>
         <div className="option">
           <p>Fullscreen</p>
-          <Switch />
+          <Switch onChange={(event) => setFullscreen(event.target.checked)} />
+        </div>
+        <div className="option">
+          <p>Down drinks</p>
+          <Switch
+            checked={props.downDrinks}
+            onChange={(event) => props.setDownDrinks(event.target.checked)}
+          />
         </div>
       </div>
       <div className="panel-header">
@@ -73,9 +92,6 @@ const Options = (props) => {
                 <tr key={index}>
                   <td>{wildcard}</td>
                   <td className="actions">
-                    <ActionIcon color="blue">
-                      <Pencil size={20} />
-                    </ActionIcon>
                     <ActionIcon
                       variant="filled"
                       color="red"
