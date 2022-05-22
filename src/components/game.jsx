@@ -6,7 +6,7 @@ import "../style/game.scss";
 import sound from "../sounds/finish.mp3";
 const finishSound = new Audio(sound);
 
-const initialTime = 60;
+const initialTime = 3;
 const initialMinuts = 60;
 
 const Game = (props) => {
@@ -36,6 +36,21 @@ const Game = (props) => {
       return newPlayer;
     };
 
+    const generateInlinePlayer = () => {
+      let newPlayer =
+        props.players[Math.floor(Math.random() * props.players.length)];
+
+      if (props.players.length > 1) {
+        while (newPlayer === lastPlayer) {
+          newPlayer =
+            props.players[Math.floor(Math.random() * props.players.length)];
+          console.log("Duplicate name");
+        }
+      }
+
+      return newPlayer;
+    };
+
     const generateWildcard = () => {
       let newWildcard =
         props.wildcards[Math.floor(Math.random() * props.wildcards.length)];
@@ -53,12 +68,8 @@ const Game = (props) => {
         if (props.players.length < 1) {
           newWildcard = newWildcard.replace("(player)", "someone");
         } else {
-          let newPlayer = generatePlayer();
-          while (newPlayer === currentPlayer) {
-            newPlayer = generatePlayer();
-            console.log("duplicate name");
-          }
-          newWildcard = newWildcard.replace("(player)", generatePlayer());
+          let newPlayer = generateInlinePlayer();
+          newWildcard = newWildcard.replace("(player)", newPlayer);
         }
       }
 
@@ -169,7 +180,7 @@ const Game = (props) => {
       <div className="timer">
         <div className="blobs">
           <div
-            className="tk-blob aa"
+            className="tk-blob "
             style={{ "--fill": "#7E6AFCbb", "--amount": 15, "--time": "50s" }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 317.5 353.7">
@@ -177,7 +188,7 @@ const Game = (props) => {
             </svg>
           </div>
           <div
-            className="tk-blob aa"
+            className="tk-blob reverse"
             style={{ "--fill": "#7E6AFCbb", "--amount": 10, "--time": "40s" }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 274 303.2">
@@ -185,7 +196,7 @@ const Game = (props) => {
             </svg>
           </div>
           <div
-            className="tk-blob aa"
+            className="tk-blob "
             style={{ "--fill": "#7E6AFCbb", "--amount": 5, "--time": "30s" }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 317.5 353.7">
@@ -193,7 +204,7 @@ const Game = (props) => {
             </svg>
           </div>
           <div
-            className="tk-blob aa"
+            className="tk-blob reverse"
             style={{ "--fill": "#7E6AFCbb", "--amount": 3, "--time": "10s" }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 274 303.2">
@@ -201,7 +212,7 @@ const Game = (props) => {
             </svg>
           </div>
           <div
-            className="tk-blob aa"
+            className="tk-blob "
             style={{ "--fill": "#7E6AFCbb", "--amount": 7, "--time": "20s" }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 317.5 353.7">
