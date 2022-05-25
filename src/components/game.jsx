@@ -6,7 +6,7 @@ import "../style/game.scss";
 import sound from "../sounds/finish.mp3";
 const finishSound = new Audio(sound);
 
-const initialTime = 3;
+const initialTime = 60;
 const initialMinuts = 60;
 
 const Game = (props) => {
