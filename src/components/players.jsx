@@ -6,6 +6,7 @@ import {
   ActionIcon,
   Table,
   ScrollArea,
+  Tooltip,
 } from "@mantine/core";
 import { Plus, Trash } from "tabler-icons-react";
 
@@ -49,17 +50,19 @@ const Players = (props) => {
               <tr key={index}>
                 <td>{player}</td>
                 <td>
-                  <ActionIcon
-                    variant="filled"
-                    color="red"
-                    onClick={() => {
-                      props.setPlayers(
-                        props.players.filter((p) => p !== player)
-                      );
-                    }}
-                  >
-                    <Trash size={20} />
-                  </ActionIcon>
+                  <Tooltip label="Delete player">
+                    <ActionIcon
+                      variant="filled"
+                      color="red"
+                      onClick={() => {
+                        props.setPlayers(
+                          props.players.filter((p) => p !== player)
+                        );
+                      }}
+                    >
+                      <Trash size={20} />
+                    </ActionIcon>
+                  </Tooltip>
                 </td>
               </tr>
             ))}

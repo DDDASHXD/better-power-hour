@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Title, Button } from "@mantine/core";
+import { Title, Button, Tooltip } from "@mantine/core";
 import { PlayerPlay, PlayerStop, PlayerPause } from "tabler-icons-react";
 import "../style/blobz.min.css";
 import "../style/game.scss";
@@ -7,17 +7,24 @@ import sound from "../sounds/finish.mp3";
 const finishSound = new Audio(sound);
 
 const initialTime = 60;
-const initialMinuts = 60;
 
 const Game = (props) => {
+  const [initialMinutes, setInitialMinutes] = useState(60);
   const [timeLeft, setTimeLeft] = useState(initialTime);
-  const [minutesLeft, setMinutesLeft] = useState(initialMinuts);
+  const [minutesLeft, setMinutesLeft] = useState(initialMinutes);
   const [currentTask, setCurrentTask] = useState("BETTER POWER HOUR");
-  const [unlimitedMode, setUnlimitedMode] = useState(initialMinuts);
+  const [unlimitedMode, setUnlimitedMode] = useState(initialMinutes);
   const [lastPlayer, setLastPlayer] = useState("");
   const [lastWildcard, setLastWildcard] = useState("");
   const [gamePaused, setGamePaused] = useState(false);
   const [currentPlayer, setCurrentPlayer] = useState("");
+  const [firstTask, setFirstTask] = useState(false);
+  const [hideEverybody, setHideEverybody] = useState(false);
+
+  // create async sleep function
+  const sleep = (ms) => {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  };
 
   useEffect(() => {
     const generatePlayer = () => {
@@ -77,6 +84,11 @@ const Game = (props) => {
       return newWildcard;
     };
 
+    // To be made
+    // if (props.minutes) {
+    //   updateMinutes(props.minutes);
+    // }
+
     // Task logic
     const showTask = () => {
       const randomPlayer = generatePlayer();
@@ -89,6 +101,14 @@ const Game = (props) => {
       const randomNumber = Math.random();
       // const randomNumber = 9;
       finishSound.play();
+
+      if (!firstTask) {
+        setFirstTask(true);
+      }
+
+      if (hideEverybody) {
+        setHideEverybody(false);
+      }
 
       if (
         randomNumber < 0.9 &&
@@ -107,8 +127,10 @@ const Game = (props) => {
         } else {
           setCurrentTask("Everybody drinks!");
         }
+        setHideEverybody(true);
       } else if (randomNumber < 0.2) {
         setCurrentTask("Everybody drinks!");
+        setHideEverybody(true);
         if (randomNumber < 0.1 && props.wildcards.length > 0) {
           setCurrentTask(`Everyone, ${randomWildcard}`);
         }
@@ -117,6 +139,7 @@ const Game = (props) => {
           setCurrentTask(`${randomPlayer}, drink!`);
         } else {
           setCurrentTask("Everybody drinks!");
+          setHideEverybody(true);
         }
       }
       console.log(randomNumber);
@@ -137,10 +160,11 @@ const Game = (props) => {
               props.setGameRunning(false);
               setTimeLeft(initialTime);
               setCurrentTask("Game over!");
+              setFirstTask(false);
               if (props.unlimitedMode) {
                 setMinutesLeft(999999);
               } else {
-                setMinutesLeft(initialMinuts);
+                setMinutesLeft(initialMinutes);
               }
             }
           }
@@ -150,12 +174,18 @@ const Game = (props) => {
           setUnlimitedMode("∞");
           setMinutesLeft(999999);
         } else {
-          setUnlimitedMode(initialMinuts);
-          setMinutesLeft(initialMinuts);
+          setUnlimitedMode(initialMinutes);
+          setMinutesLeft(initialMinutes);
         }
       }
     }
-  }, [timeLeft, props.gameRunning, props.unlimitedMode, gamePaused]);
+  }, [
+    timeLeft,
+    props.gameRunning,
+    props.unlimitedMode,
+    gamePaused,
+    props.minutes,
+  ]);
 
   const startGame = () => {
     props.setGameRunning(true);
@@ -165,7 +195,8 @@ const Game = (props) => {
     props.setGameRunning(false);
     setGamePaused(false);
     setTimeLeft(initialTime);
-    setMinutesLeft(initialMinuts);
+    setMinutesLeft(initialMinutes);
+    setFirstTask(false);
   };
 
   const pauseGame = () => {
@@ -175,7 +206,20 @@ const Game = (props) => {
   return (
     <div className="game">
       <Title order={1} className="game-header">
-        {currentTask}
+        {firstTask ? (
+          <>
+            {hideEverybody ? (
+              <>{currentTask}</>
+            ) : (
+              <>
+                Everybody drinks and <br />
+                {currentTask}
+              </>
+            )}
+          </>
+        ) : (
+          <>Better Power Hour</>
+        )}
       </Title>
       <div className="timer">
         <div className="blobs">
@@ -230,23 +274,12 @@ const Game = (props) => {
           <p className="countdown-left">
             {props.unlimitedMode
               ? `${999999 - minutesLeft}/${unlimitedMode}`
-              : `${initialMinuts - minutesLeft}/${unlimitedMode}`}
+              : `${initialMinutes - minutesLeft}/${unlimitedMode}`}
           </p>
         </div>
       </div>
       <div className="buttons">
-        <Button
-          style={{
-            height: "3rem",
-            width: "3rem",
-            margin: "auto",
-            padding: "0.5rem",
-          }}
-          onClick={props.gameRunning ? () => stopGame() : () => startGame()}
-        >
-          {props.gameRunning ? <PlayerStop /> : <PlayerPlay />}
-        </Button>
-        {props.gameRunning && (
+        <Tooltip label={props.gameRunning ? "Stop game" : "Start game"}>
           <Button
             style={{
               height: "3rem",
@@ -254,10 +287,25 @@ const Game = (props) => {
               margin: "auto",
               padding: "0.5rem",
             }}
-            onClick={() => pauseGame()}
+            onClick={props.gameRunning ? () => stopGame() : () => startGame()}
           >
-            {gamePaused ? <PlayerPlay /> : <PlayerPause />}
+            {props.gameRunning ? <PlayerStop /> : <PlayerPlay />}
           </Button>
+        </Tooltip>
+        {props.gameRunning && (
+          <Tooltip label={gamePaused ? "Resume game" : "Pause game"}>
+            <Button
+              style={{
+                height: "3rem",
+                width: "3rem",
+                margin: "auto",
+                padding: "0.5rem",
+              }}
+              onClick={() => pauseGame()}
+            >
+              {gamePaused ? <PlayerPlay /> : <PlayerPause />}
+            </Button>
+          </Tooltip>
         )}
       </div>
     </div>

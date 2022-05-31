@@ -6,8 +6,10 @@ import {
   ActionIcon,
   Table,
   ScrollArea,
+  NumberInput,
+  Tooltip,
 } from "@mantine/core";
-import { Trash, Pencil, Plus } from "tabler-icons-react";
+import { Trash, Pencil, Plus, Tool } from "tabler-icons-react";
 import "../style/options.scss";
 
 const Options = (props) => {
@@ -41,25 +43,43 @@ const Options = (props) => {
         {gameRunning ? (
           <></>
         ) : (
+          <Tooltip label="Should the game last forever?">
+            <div className="option">
+              <p>Unlimited mode</p>
+              <Switch
+                checked={props.unlimitedMode}
+                onChange={(event) =>
+                  props.setUnlimitedMode(event.target.checked)
+                }
+              />
+            </div>
+          </Tooltip>
+        )}
+        <Tooltip label="Fullscreen mode">
           <div className="option">
-            <p>Unlimited mode</p>
+            <p>Fullscreen</p>
+            <Switch onChange={(event) => setFullscreen(event.target.checked)} />
+          </div>
+        </Tooltip>
+        <Tooltip label="Should a down drink wildcard appear? (10% chance)">
+          <div className="option">
+            <p>Down drinks</p>
             <Switch
-              checked={props.unlimitedMode}
-              onChange={(event) => props.setUnlimitedMode(event.target.checked)}
+              checked={props.downDrinks}
+              onChange={(event) => props.setDownDrinks(event.target.checked)}
             />
           </div>
-        )}
-        <div className="option">
-          <p>Fullscreen</p>
-          <Switch onChange={(event) => setFullscreen(event.target.checked)} />
-        </div>
-        <div className="option">
-          <p>Down drinks</p>
-          <Switch
-            checked={props.downDrinks}
-            onChange={(event) => props.setDownDrinks(event.target.checked)}
-          />
-        </div>
+        </Tooltip>
+        <Tooltip label="How long should the game last in minutes?">
+          <div className="option">
+            <p>Minutes</p>
+            <NumberInput
+              value={props.minutes}
+              onChange={(val) => props.setMinutes(val)}
+              placeholder="default: 60"
+            />
+          </div>
+        </Tooltip>
       </div>
       <div className="panel-header">
         <Title order={2} className="options-title">
@@ -109,17 +129,19 @@ const Options = (props) => {
                 <tr key={index}>
                   <td>{wildcard}</td>
                   <td className="actions">
-                    <ActionIcon
-                      variant="filled"
-                      color="red"
-                      onClick={() => {
-                        props.setWildcards(
-                          props.wildcards.filter((w, i) => i !== index)
-                        );
-                      }}
-                    >
-                      <Trash size={20} />
-                    </ActionIcon>
+                    <Tooltip label="Delete task">
+                      <ActionIcon
+                        variant="filled"
+                        color="red"
+                        onClick={() => {
+                          props.setWildcards(
+                            props.wildcards.filter((w, i) => i !== index)
+                          );
+                        }}
+                      >
+                        <Trash size={20} />
+                      </ActionIcon>
+                    </Tooltip>
                   </td>
                 </tr>
               ))}
